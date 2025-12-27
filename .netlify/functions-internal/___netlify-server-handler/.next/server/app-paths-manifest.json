@@ -1,0 +1,9 @@
+{
+  "/_not-found/page": "app/_not-found/page.js",
+  "/(movies)/catalog/page": "app/(movies)/catalog/page.js",
+  "/(movies)/discover/page": "app/(movies)/discover/page.js",
+  "/(movies)/watch/[id]/page": "app/(movies)/watch/[id]/page.js",
+  "/(user)/continue-watching/page": "app/(user)/continue-watching/page.js",
+  "/(user)/profile/page": "app/(user)/profile/page.js",
+  "/page": "app/page.js"
+}

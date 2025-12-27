@@ -33,7 +33,7 @@ const ResultItems = ({ data, setIsSearchBoxOpen, setSearchValue }) => {
     <motion.div variants={listItemVariants} initial="hidden" animate="show">
       <Link
         className="flex gap-[6px] w-full cursor-pointer hover:bg-[#242734]"
-        href={`/watch/${data?.id}?media_type=${data?.media_type || type || "movie"}`}
+        href={`/watch/${data?.id}?media_type=${data?.media_type || "movie"}`}
         onClick={() => {
           setIsSearchBoxOpen(false)
           setSearchValue("")
@@ -60,8 +60,8 @@ const ResultItems = ({ data, setIsSearchBoxOpen, setSearchValue }) => {
               </div>
               <div className="text-[#ffffffab] text-[14px]">
                 {data?.media_type ?
-                  data?.media_type?.length > 2 ? data?.media_type?.charAt(0)?.toUpperCase() + data?.media_type?.slice(1)?.toLowerCase() : data?.media_type?.toUpperCase() :
-                  type === "tv" ? data?.first_air_date?.slice(0, 4) : data?.release_date?.slice(0, 4)
+                  ((data?.media_type || '').length > 2 ? (data?.media_type?.charAt(0)?.toUpperCase() + data?.media_type?.slice(1)?.toLowerCase()) : (data?.media_type || '').toUpperCase()) :
+                  (data?.media_type === "tv") ? (data?.first_air_date || '').slice(0, 4) : (data?.release_date || '').slice(0, 4)
                 }
               </div>
             </div>

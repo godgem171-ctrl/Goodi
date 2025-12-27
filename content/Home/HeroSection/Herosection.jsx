@@ -50,7 +50,7 @@ const Herosection = ({ data }) => {
           <div className="flex items-center gap-4 max-[500px]:text-[14px]">
             <span className='flex items-center text-white my-2'>
               <svg xmlns="http://www.w3.org/2000/svg" className='w-5 h-5 mr-1 max-[500px]:w-4' viewBox="0 0 48 48"><defs><mask id="ipSPlay0"><g fill="none" strokeLinejoin="round" strokeWidth="4"><path fill="#fff" stroke="#fff" d="M24 44c11.046 0 20-8.954 20-20S35.046 4 24 4S4 12.954 4 24s8.954 20 20 20Z" /><path fill="#000" stroke="#000" d="M20 24v-6.928l6 3.464L32 24l-6 3.464l-6 3.464z" /></g></mask></defs><path fill="currentColor" d="M0 0h48v48H0z" mask="url(#ipSPlay0)" /></svg>
-              {populardata?.media_type.length > 2 ? populardata?.media_type?.charAt(0).toUpperCase() + populardata?.media_type?.slice(1).toLowerCase() : populardata?.media_type.toUpperCase()}
+              {((populardata?.media_type || '').length > 2 ? (populardata?.media_type?.charAt(0).toUpperCase() + populardata?.media_type?.slice(1).toLowerCase()) : (populardata?.media_type || '').toUpperCase())}
             </span>
 
             <span className={"text-[#2fc867]"}>{populardata?.original_language === "en" ? "English".toUpperCase() : populardata?.original_language}</span>

@@ -25,23 +25,33 @@ const Home = async () => {
   trendingdata = trendingdata || (await import('@/lib/tmdbMock')).trendingMock;
   top_rateddata = top_rateddata || (await import('@/lib/tmdbMock')).topRatedMock;
 
-  return (
-    <>
-      <Herosection data={trendingdata} />
+  try {
+    return (
+      <>
+        <Herosection data={trendingdata} />
 
-      <div className="w-full flex flex-col items-center z-10 relative main-responsive">
-        <Trending data={trendingdata} />
-        <WatchHistory />
-        <Collection />
-        <Popular />
-        <TopRated data={top_rateddata} />
+        <div className="w-full flex flex-col items-center z-10 relative main-responsive">
+          <Trending data={trendingdata} />
+          <WatchHistory />
+          <Collection />
+          <Popular />
+          <TopRated data={top_rateddata} />
+        </div>
+
+        {/* background */}
+        <div className="fixed w-[138.33px] h-[82.25px] left-[1%] top-[2%] bg-[#92b7fc8f] blur-[200px]"></div>
+        <div className="fixed w-[500px] h-[370.13px] right-[50%] bottom-[20%] bg-[#576683b4] blur-[215.03px] translate-x-[70%] z-0 rounded-full"></div>
+      </>
+    )
+  } catch (err) {
+    console.error('Home render error (fallback to simple content):', err);
+    return (
+      <div style={{padding: 40}}>
+        <h1>MovieVerse (fallback)</h1>
+        <p>There was an error rendering the home page, but the site is usable in fallback mode.</p>
       </div>
-
-      {/* background */}
-      <div className="fixed w-[138.33px] h-[82.25px] left-[1%] top-[2%] bg-[#92b7fc8f] blur-[200px]"></div>
-      <div className="fixed w-[500px] h-[370.13px] right-[50%] bottom-[20%] bg-[#576683b4] blur-[215.03px] translate-x-[70%] z-0 rounded-full"></div>
-    </>
-  )
+    )
+  }
 }
 
 export default Home

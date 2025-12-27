@@ -31,9 +31,9 @@ const HorizontalCard = ({ data, type }) => {
           <Link href={`/watch/${data?.id}?media_type=${type}`} className="text-[#c4c7cc] text-[15px] font-medium overflow-hidden text-ellipsis line-clamp-2 hover:text-[#e4e5e8] transition-all cursor-pointer">{data?.title || data?.name || "A God like movie"}</Link>
 
           <div className="flex gap-[6px] text-[14px] text-[#c4c7ccce] items-center">
-            <div className="flex items-center gap-1 font-medium overflow-hidden text-ellipsis line-clamp-1"> {data?.media_type.length > 2 ? data?.media_type?.charAt(0)?.toUpperCase() + data?.media_type?.slice(1).toLowerCase() : data?.media_type?.toUpperCase()}</div>
+            <div className="flex items-center gap-1 font-medium overflow-hidden text-ellipsis line-clamp-1"> {((data?.media_type || '').length > 2 ? (data?.media_type?.charAt(0)?.toUpperCase() + data?.media_type?.slice(1).toLowerCase()) : (data?.media_type || '').toUpperCase())}</div>
             <div className="h-1 w-1 bg-[#ffffff94] rounded-full"></div>
-            <div className="flex items-center gap-1 font-medium overflow-hidden text-ellipsis line-clamp-1"><IoLayers /> {Totalgenres.find(g => g.id === data?.genre_ids[0])?.name}</div>
+            <div className="flex items-center gap-1 font-medium overflow-hidden text-ellipsis line-clamp-1"><IoLayers /> {(data?.genre_ids && data.genre_ids[0]) ? Totalgenres.find(g => g.id === data?.genre_ids[0])?.name : 'N/A'}</div>
             <div className="h-1 w-1 bg-[#ffffff94] rounded-full"></div>
             <div className="flex items-center gap-1 font-medium overflow-hidden text-ellipsis line-clamp-1">{languageMap[data?.original_language] || data?.original_language}</div>
           </div>

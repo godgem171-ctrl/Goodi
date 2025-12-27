@@ -40,8 +40,8 @@ const Card = ({ data, index, loading, hidden, type }) => {
         <div className={`${styles.info} bottom-2 left-0 right-0 absolute text-xs font-medium flex flex-wrap items-center justify-center gap-[.3rem] z-[7] opacity-0`}>
           <span className="uppercase text-slate-200">
             {data?.media_type ?
-              data?.media_type?.length > 2 ? data?.media_type?.charAt(0)?.toUpperCase() + data?.media_type?.slice(1)?.toLowerCase() : data?.media_type?.toUpperCase() :
-              type === "tv" ? data?.first_air_date?.slice(0, 4) : data?.release_date?.slice(0, 4)
+              ((data?.media_type || '').length > 2 ? (data?.media_type?.charAt(0)?.toUpperCase() + data?.media_type?.slice(1)?.toLowerCase()) : (data?.media_type || '').toUpperCase()) :
+              type === "tv" ? (data?.first_air_date || '').slice(0, 4) : (data?.release_date || '').slice(0, 4)
             }
           </span>
           <span className="text-[10px]">•</span>

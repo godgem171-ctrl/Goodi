@@ -28,7 +28,7 @@ const TrendingCard = ({ info }) => {
       <div className="absolute bottom-0 left-0 pl-[8px] pb-2 z-10 opacity-100 group-hover:opacity-0 transition">
         <h1 className="text-[#ffffffd1] font-medium text-md font-['poppins'] w-[186px] line-clamp-1 text-ellipsis overflow-hidden cursor-pointer">{info?.title || info?.name || ""}</h1>
         <span className="text-[#ffffffb0] text-sm">
-          {info?.media_type.length > 2 ? info?.media_type?.charAt(0).toUpperCase() + info?.media_type?.slice(1).toLowerCase() : info?.media_type?.toUpperCase()}, {info?.genre_ids[0] && Totalgenres?.find(g => g?.id === info?.genre_ids[0])?.name}
+          {((info?.media_type || '').length > 2 ? (info?.media_type?.charAt(0).toUpperCase() + info?.media_type?.slice(1).toLowerCase()) : (info?.media_type || '').toUpperCase())}, {(info?.genre_ids && info.genre_ids[0]) ? Totalgenres?.find(g => g?.id === info?.genre_ids[0])?.name : 'N/A'}
         </span>
       </div>
 
