@@ -1,0 +1,28 @@
+name: Trigger Netlify Build (MovieVerse)
+
+on:
+  push:
+    branches: [ 'chore/update-deps' ]
+  workflow_dispatch: {}
+
+jobs:
+  trigger-build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check needed secrets
+        run: |
+          if [ -z "${{ secrets.NETLIFY_AUTH_TOKEN }}" ] || [ -z "${{ secrets.NETLIFY_SITE_ID }}" ]; then
+            echo "Secrets NETLIFY_AUTH_TOKEN and NETLIFY_SITE_ID are required to trigger the build. Please add them in repository settings -> Secrets.";
+            exit 1;
+          fi
+
+      - name: Trigger Netlify build for branch
+        env:
+          NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
+          NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
+        run: |
+          echo "Triggering Netlify build for branch chore/update-deps..."
+          curl -s -X POST "https://api.netlify.com/api/v1/sites/$NETLIFY_SITE_ID/builds" \
+            -H "Content-Type: application/json" \
+            -H "Authorization: Bearer $NETLIFY_AUTH_TOKEN" \
+            -d '{"trigger_branch":"chore/update-deps"}' | jq '.' || true
