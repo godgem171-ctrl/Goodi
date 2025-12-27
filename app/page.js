@@ -7,10 +7,23 @@ import WatchHistory from "@/content/Home/WatchHistory";
 import { getTrendingMovies, getTopRatedMovies } from "@/lib/MoviesFunctions";
 
 const Home = async () => {
-  const [trendingdata, top_rateddata] = await Promise.all([
-    getTrendingMovies(),
-    getTopRatedMovies()
-  ]);
+  let trendingdata = null, top_rateddata = null;
+  try {
+    [trendingdata, top_rateddata] = await Promise.all([
+      getTrendingMovies(),
+      getTopRatedMovies()
+    ]);
+  } catch (err) {
+    // Provide safe fallbacks when fetching TMDB fails during prerender
+    console.warn('Failed to fetch TMDB data for Home page, using mocks:', err?.message || err);
+    const { trendingMock, topRatedMock } = await import('@/lib/tmdbMock');
+    trendingdata = trendingdata || trendingMock;
+    top_rateddata = top_rateddata || topRatedMock;
+  }
+
+  // Ensure shape
+  trendingdata = trendingdata || (await import('@/lib/tmdbMock')).trendingMock;
+  top_rateddata = top_rateddata || (await import('@/lib/tmdbMock')).topRatedMock;
 
   return (
     <>
