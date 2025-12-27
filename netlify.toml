@@ -1,0 +1,11 @@
+# Netlify configuration for MovieVerse
+[build]
+  command = "SKIP_FIREBASE=1 npm run build"
+  publish = ".next"
+
+[[plugins]]
+  package = "@netlify/plugin-nextjs"
+
+[context.production.environment]
+  # Prevent Firebase init during build if you don't have keys set in Netlify env
+  SKIP_FIREBASE = "1"

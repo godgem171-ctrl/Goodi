@@ -13,9 +13,17 @@ const firebaseConfig = {
   measurementId: process.env.measurementId
 };
 
-const app = initializeApp(firebaseConfig);
+// Prevent Firebase initialization during build or when API key is missing
+let app = null;
+if (!process.env.SKIP_FIREBASE && process.env.apiKey) {
+  app = initializeApp(firebaseConfig);
+} else {
+  // When building without Firebase credentials, skip init to avoid errors
+  /* eslint-disable no-console */
+  console.warn('Firebase initialization skipped (SKIP_FIREBASE or missing apiKey)');
+}
 
-export const auth = getAuth(app);
-export const googleProvider = new GoogleAuthProvider();
+export const auth = app ? getAuth(app) : null;
+export const googleProvider = app ? new GoogleAuthProvider() : null;
 
-export const db = getFirestore(app);
+export const db = app ? getFirestore(app) : null;
