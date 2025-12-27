@@ -8,6 +8,7 @@ import Link from "next/link";
 
 const Herosection = ({ data }) => {
   const { results = [] } = data || {};
+  console.log('Herosection render - results length:', (results || []).length);
 
   const [populardata, setPopularData] = useState(null);
 

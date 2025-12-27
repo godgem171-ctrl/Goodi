@@ -1,6 +1,7 @@
 import Card from "@/components/Cards/Card/Card";
 
 const TopRated = ({ data }) => {
+  console.log('TopRated render - results length:', (data?.results || []).length);
 
   return (
     <div className="w-full max-w-[96rem] relative bottom-28 mx-5 mt-12">

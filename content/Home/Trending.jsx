@@ -3,6 +3,7 @@ import { Fragment } from "react"
 
 const Trending = ({ data }) => {
   const { results = [] } = data || {};
+  console.log('Trending render - results length:', (results || []).length);
 
   return (
     <div className="w-full max-w-[96rem] relative bottom-28 mx-5 max-[1270px]:bottom-0 max-[1270px]:mt-6">
