@@ -12,6 +12,11 @@ const categories = [
 
 
 export const addMovie = async (uid, movie, isAuthenticated, status) => {
+  if (!db) {
+    toast.error("Firebase is not configured for this deployment. Saving is disabled.");
+    throw new Error("Firebase disabled");
+  }
+
   if (!isAuthenticated) {
     toast.error("❌ You lack the required authentication! Log in to inscribe your saga.");
     throw new Error("User is not authenticated. Please log in to add a post.");
@@ -52,7 +57,10 @@ export const addMovie = async (uid, movie, isAuthenticated, status) => {
 
 
 export const findMovieFromCollection = async (uid, movieId) => {
-  // console.log(uid, movieId)
+  if (!db) {
+    // No DB configured — return null as nothing is stored
+    return null;
+  }
 
   if (!uid || !movieId) {
     throw new Error("User ID and Movie ID are required to search.");
@@ -76,6 +84,11 @@ export const findMovieFromCollection = async (uid, movieId) => {
 }
 
 export const getTotalMoviesCount = async (uid, getByStatus = false) => {
+  if (!db) {
+    // Return sensible defaults when DB unavailable
+    return getByStatus ? { total: 0, breakdown: categories.map(c => ({ status: c.id, count: 0, movies: [] })) } : 0;
+  }
+
   if (!uid) {
     throw new Error("User ID is required to fetch movie data.");
   }
@@ -105,6 +118,10 @@ export const getTotalMoviesCount = async (uid, getByStatus = false) => {
 
 
 export const getMoviesByStatus = async (uid, status) => {
+  if (!db) {
+    return [];
+  }
+
   if (!uid || !status) {
     throw new Error("User ID and status are required to fetch movies.");
   }

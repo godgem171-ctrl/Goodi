@@ -46,6 +46,12 @@ export const UserInfoProvider = ({ children }) => {
   // console.log({ isUserLoggedIn, loading });
 
   const fetchUserData = async (uid) => {
+    if (!db) {
+      console.warn('Firestore DB not initialized; cannot fetch user data.');
+      clearUserData();
+      return;
+    }
+
     try {
       const docRef = doc(db, "users", uid);
       const docSnap = await getDoc(docRef);
@@ -103,11 +109,22 @@ export const UserInfoProvider = ({ children }) => {
 
       loadPersistedUserData();
 
+      // Avoid subscribing if Firebase auth isn't initialized
+      if (!auth) {
+        console.warn('Firebase auth not initialized; skipping auth listener.');
+        setLoading(false);
+        return;
+      }
+
       // Set up authentication state listener
       const unsubscribe = onAuthStateChanged(auth, async (user) => {
         if (user?.uid) {
           setIsUserLoggedIn(true);
-          await fetchUserData(user.uid);
+          if (db) {
+            await fetchUserData(user.uid);
+          } else {
+            console.warn('Firestore not initialized; cannot fetch user data.');
+          }
         } else {
           clearUserData();
         }

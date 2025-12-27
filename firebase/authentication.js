@@ -8,6 +8,12 @@ import { toast } from 'react-toastify'
 
 
 export const signinwithGoogle = async () => {
+  if (!auth || !googleProvider) {
+    console.warn('Firebase auth or googleProvider not initialized.');
+    toast('Authentication is not available right now.');
+    return;
+  }
+
   try {
     const data = await signInWithPopup(auth, googleProvider);
 
@@ -36,6 +42,7 @@ export const signinwithGoogle = async () => {
 
   } catch (err) {
     console.error(err);
+    toast('Authentication failed.');
   }
 }
 
@@ -45,6 +52,11 @@ export const createNewUserProfile = async (userdetails) => {
 
   if (!uid || !userdetails) {
     throw new Error("Method requires uid and userdetails.");
+  }
+
+  if (!db) {
+    console.warn('Firestore DB not initialized; skipping user profile creation.');
+    return;
   }
 
   try {

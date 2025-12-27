@@ -32,7 +32,7 @@ const Dropdown = ({ data, isLoggedIn }) => {
             <div><IoMdSettings /></div>
             <div>Settings</div>
           </Link>
-          <div className="flex items-center gap-2 hover:bg-[#351f23] rounded-xl px-2 py-2 text-slate-200 cursor-pointer" onClick={() => signOut(auth)}>
+          <div className="flex items-center gap-2 hover:bg-[#351f23] rounded-xl px-2 py-2 text-slate-200 cursor-pointer" onClick={() => { if (auth) { signOut(auth) } else { console.warn('Auth not initialized; cannot sign out.') } }}>
             <div><RxExit /></div>
             <div>Log Out</div>
           </div>

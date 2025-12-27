@@ -12,9 +12,14 @@ const Popular = () => {
   useEffect(() => {
     const getPopular = async () => {
       setLoading(true)
-      const data = await getPopularMovies(page)
-      setPopularData([...popularData, ...data?.results])
-      setLoading(false)
+      try {
+        const data = await getPopularMovies(page)
+        setPopularData(prev => [...prev, ...(data?.results || [])])
+      } catch (err) {
+        console.error('Failed to fetch popular movies', err)
+      } finally {
+        setLoading(false)
+      }
     }
     getPopular()
     // eslint-disable-next-line react-hooks/exhaustive-deps
