@@ -1,0 +1,114 @@
+From 8856dc5042e2abde98cee7189c5b4516f6526db6 Mon Sep 17 00:00:00 2001
+From: godgem171-ctrl <godgem171@gmail.com>
+Date: Sat, 27 Dec 2025 07:18:26 +0000
+Subject: [PATCH] chore: add Netlify config + GH Actions deploy; guard Firebase
+ init; revert static export
+
+---
+ .github/workflows/netlify-deploy.yml | 33 ++++++++++++++++++++++++++++
+ firebase/config.js                   | 16 ++++++++++----
+ netlify.toml                         | 11 ++++++++++
+ next.config.mjs                      |  1 +
+ 4 files changed, 57 insertions(+), 4 deletions(-)
+ create mode 100644 .github/workflows/netlify-deploy.yml
+ create mode 100644 netlify.toml
+
+diff --git a/.github/workflows/netlify-deploy.yml b/.github/workflows/netlify-deploy.yml
+new file mode 100644
+index 0000000..c9fda75
+--- /dev/null
++++ b/.github/workflows/netlify-deploy.yml
+@@ -0,0 +1,33 @@
++name: Netlify Deploy
++
++on:
++  push:
++    branches: [ main ]
++
++jobs:
++  build-and-deploy:
++    runs-on: ubuntu-latest
++
++    steps:
++      - uses: actions/checkout@v4
++
++      - name: Use Node.js
++        uses: actions/setup-node@v4
++        with:
++          node-version: '18'
++          cache: 'npm'
++
++      - name: Install dependencies
++        run: npm ci
++
++      - name: Build
++        run: SKIP_FIREBASE=1 npm run build
++
++      - name: Deploy to Netlify
++        env:
++          NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
++          NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
++        run: |
++          # Make sure netlify CLI is available
++          npm i -g netlify-cli
++          npx netlify deploy --dir=.next --prod --site=$NETLIFY_SITE_ID --auth=$NETLIFY_AUTH_TOKEN
+diff --git a/firebase/config.js b/firebase/config.js
+index ded09ea..1e1bb17 100644
+--- a/firebase/config.js
++++ b/firebase/config.js
+@@ -13,9 +13,17 @@ const firebaseConfig = {
+   measurementId: process.env.measurementId
+ };
+ 
+-const app = initializeApp(firebaseConfig);
++// Prevent Firebase initialization during build or when API key is missing
++let app = null;
++if (!process.env.SKIP_FIREBASE && process.env.apiKey) {
++  app = initializeApp(firebaseConfig);
++} else {
++  // When building without Firebase credentials, skip init to avoid errors
++  /* eslint-disable no-console */
++  console.warn('Firebase initialization skipped (SKIP_FIREBASE or missing apiKey)');
++}
+ 
+-export const auth = getAuth(app);
+-export const googleProvider = new GoogleAuthProvider();
++export const auth = app ? getAuth(app) : null;
++export const googleProvider = app ? new GoogleAuthProvider() : null;
+ 
+-export const db = getFirestore(app);
+\ No newline at end of file
++export const db = app ? getFirestore(app) : null;
+\ No newline at end of file
+diff --git a/netlify.toml b/netlify.toml
+new file mode 100644
+index 0000000..9f27eac
+--- /dev/null
++++ b/netlify.toml
+@@ -0,0 +1,11 @@
++# Netlify configuration for MovieVerse
++[build]
++  command = "SKIP_FIREBASE=1 npm run build"
++  publish = ".next"
++
++[[plugins]]
++  package = "@netlify/plugin-nextjs"
++
++[context.production.environment]
++  # Prevent Firebase init during build if you don't have keys set in Netlify env
++  SKIP_FIREBASE = "1"
+diff --git a/next.config.mjs b/next.config.mjs
+index ef280dd..c53e362 100644
+--- a/next.config.mjs
++++ b/next.config.mjs
+@@ -2,6 +2,7 @@
+ const nextConfig = {
+   reactStrictMode: true,
+   swcMinify: true,
++
+   images: {
+     domains: [
+       's4.anilist.co',
+-- 
+2.52.0
+
